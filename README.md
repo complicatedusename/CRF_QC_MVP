@@ -33,6 +33,12 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
    source .venv/bin/activate
    pip install -r requirements.txt
    ```
+   ```powershell
+   python -m venv .venv
+   .venv\Scripts\Activate.ps1  # Dùng .venv\Scripts\Activate.bat nếu chạy trong Command Prompt
+   pip install -r requirements.txt
+   ```
+   Người dùng Windows hãy chọn khối lệnh phù hợp với shell mà mình đang sử dụng.
 
 2. **Chuẩn bị dữ liệu đầu vào**
    * Đặt các ảnh quét CRF theo từng trang (PNG hoặc JPG) trong `data/scans/`. Nếu nguồn ban đầu là PDF, hãy dùng `scripts/ocr_pdf_to_images.py` để kết xuất thành ảnh.
