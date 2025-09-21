@@ -12,7 +12,7 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 │   └── qc_output/      # Tệp JSON/CSV trung gian sinh ra trong bước QC
 ├── label_studio/
 │   ├── template_crf.xml        # Cấu hình giao diện cho Label Studio
-│   └── sample_import.jsonl     # Tác vụ mẫu giúp khởi tạo dự án nhanh chóng
+│   └── sample_import.json     # Tác vụ mẫu giúp khởi tạo dự án nhanh chóng
 ├── output/
 │   └── crf_final.xlsx          # Tệp Excel tổng hợp kết quả QC cuối cùng (placeholder)
 ├── scripts/
@@ -28,27 +28,25 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 
 1. **Cài đặt phụ thuộc**
    ```powershell
-   python -m venv .venv
-   .venv\Scripts\Activate.ps1   # Dùng .venv\Scripts\Activate.bat nếu chạy trong Command Prompt
-   pip install -r requirements.txt
-   ```
+# Cho phép Label Studio truy cập file cục bộ
+$env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED = "true"
+$env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT = "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP"
 
-2. **Chuẩn bị dữ liệu đầu vào**
-   * Đặt các ảnh quét CRF theo từng trang (PNG hoặc JPG) trong `data/scans/`. Nếu nguồn ban đầu là PDF, hãy dùng `scripts/ocr_pdf_to_images.py` để kết xuất thành ảnh.
-   * Thả các bản nháp HTML do đường ống trích xuất tạo ra vào `data/drafts/`. Mỗi tệp cần được đặt tên trùng với ảnh tương ứng (ví dụ: `subject001_page_01.html`).
+# Khởi tạo project "CRF QC" với label config
+label-studio init "CRF QC" `
+  -l "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP\label_studio\template_crf.xml" `
+  --username admin@example.com `
+  --password admin123
 
-3. **Sinh nhiệm vụ cho Label Studio**
-   ```powershell
-   python scripts/make_labelstudio_tasks.py label_studio/import.jsonl
-   ```
-   Lệnh trên ghép cặp ảnh với bản nháp và tạo tệp JSONL sẵn sàng để nhập vào Label Studio. Dùng thêm `--checklist path/to/items.txt` nếu muốn thay thế danh sách kiểm QC mặc định.
 
-4. **Khởi chạy Label Studio**
-   ```powershell
-   $env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED = "true"
-   $env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT = "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP"
-   label-studio start --project-name "CRF QC" --label-config "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP\label_studio\template_crf.xml" --init --input-path "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP\label_studio\sample_import.jsonl"
-   ```
+Vào Label Studio → Projects → CRF QC → Settings → Labeling Interface → 
+xóa toàn bộ nội dung mặc định và dán template trong `label_studio/template_crf.xml` → Save.
+# Khởi động server (Windows cần thêm fix SQLite)
+label-studio start --agree-fix-sqlite
+```
+
+Sau đó mở [http://localhost:8080](http://localhost:8080), đăng nhập bằng username/password đã đặt ở bước init.  
+Trong giao diện web, chọn **Import** và tải file `label_studio\sample_import.json` để nạp dữ liệu.
    *(Nhớ thay đường dẫn nếu bạn đặt dự án ở chỗ khác.)*  
    Sau đó mở trình duyệt tại [http://localhost:8080](http://localhost:8080).
 

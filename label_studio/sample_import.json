@@ -1,0 +1,84 @@
+[
+  {
+    "data": {
+      "image_url": "https://example.com/scans/patient_001_page_1.png",
+      "draft_html": "<h3>Visit 1</h3><p>Vital signs recorded. All fields captured.</p>",
+      "checks": [
+        "Confirm patient identifiers match between scan and draft.",
+        "Validate visit date and site.",
+        "Flag missing vitals or lab entries."
+      ],
+      "field_deltas": [
+        [
+          "Field",
+          "Scan Value",
+          "Draft Value"
+        ],
+        [
+          "Height",
+          "175 cm",
+          "N/A"
+        ],
+        [
+          "Systolic BP",
+          "120",
+          "112"
+        ]
+      ]
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "qc_result",
+            "to_name": "crf_scan",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "Needs Fix"
+              ]
+            }
+          },
+          {
+            "from_name": "qc_notes",
+            "to_name": "crf_scan",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "Height missing in draft export."
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "data": {
+      "image_url": "https://example.com/scans/patient_002_page_1.png",
+      "draft_html": "<h3>Visit 2</h3><p>Medications updated and adverse events logged.</p>",
+      "checks": [
+        "Review new adverse events against draft entries.",
+        "Verify concomitant medications.",
+        "Ensure narrative comments transcribed."
+      ],
+      "field_deltas": [
+        [
+          "Field",
+          "Scan Value",
+          "Draft Value"
+        ],
+        [
+          "Adverse Event",
+          "Headache",
+          "Migraine"
+        ],
+        [
+          "Medications",
+          "Aspirin",
+          "Aspirin"
+        ]
+      ]
+    }
+  }
+]
