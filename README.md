@@ -11,15 +11,14 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 │   ├── drafts/         # Bản nháp HTML do đường ống trích xuất tạo ra
 │   └── qc_output/      # Tệp JSON/CSV trung gian sinh ra trong bước QC
 ├── label_studio/
-│   ├── template_crf.xml        # Cấu hình giao diện cho Label Studio (nền tảng gán nhãn dữ liệu mã nguồn mở)
+│   ├── template_crf.xml        # Cấu hình giao diện cho Label Studio
 │   └── sample_import.jsonl     # Tác vụ mẫu giúp khởi tạo dự án nhanh chóng
 ├── output/
 │   └── crf_final.xlsx          # Tệp Excel tổng hợp kết quả QC cuối cùng (placeholder)
 ├── scripts/
-│   ├── run_labelstudio.sh      # Script hỗ trợ khởi chạy Label Studio cùng dự án CRF
 │   ├── make_labelstudio_tasks.py   # Tạo tệp JSONL nhiệm vụ từ scans + drafts
 │   ├── json_to_excel.py            # Chuyển đổi dữ liệu xuất từ Label Studio sang Excel
-│   ├── ocr_pdf_to_images.py        # Trợ thủ tùy chọn để tách PDF thành ảnh (OCR = Optical Character Recognition, nhận dạng ký tự quang học)
+│   ├── ocr_pdf_to_images.py        # Trợ thủ tùy chọn để tách PDF thành ảnh
 │   └── ocr_image_to_text.py        # Trợ thủ tùy chọn chạy OCR hàng loạt trên ảnh
 ├── requirements.txt
 └── README.md
@@ -28,50 +27,30 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 ## Getting started
 
 1. **Cài đặt phụ thuộc**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   ```
    ```powershell
    python -m venv .venv
-   .venv\Scripts\Activate.ps1  # Dùng .venv\Scripts\Activate.bat nếu chạy trong Command Prompt
+   .venv\Scripts\Activate.ps1   # Dùng .venv\Scripts\Activate.bat nếu chạy trong Command Prompt
    pip install -r requirements.txt
    ```
-   Người dùng Windows hãy chọn khối lệnh phù hợp với shell mà mình đang sử dụng.
 
 2. **Chuẩn bị dữ liệu đầu vào**
    * Đặt các ảnh quét CRF theo từng trang (PNG hoặc JPG) trong `data/scans/`. Nếu nguồn ban đầu là PDF, hãy dùng `scripts/ocr_pdf_to_images.py` để kết xuất thành ảnh.
    * Thả các bản nháp HTML do đường ống trích xuất tạo ra vào `data/drafts/`. Mỗi tệp cần được đặt tên trùng với ảnh tương ứng (ví dụ: `subject001_page_01.html`).
 
 3. **Sinh nhiệm vụ cho Label Studio**
-   ```bash
+   ```powershell
    python scripts/make_labelstudio_tasks.py label_studio/import.jsonl
    ```
    Lệnh trên ghép cặp ảnh với bản nháp và tạo tệp JSONL sẵn sàng để nhập vào Label Studio. Dùng thêm `--checklist path/to/items.txt` nếu muốn thay thế danh sách kiểm QC mặc định.
 
 4. **Khởi chạy Label Studio**
-   ```bash
-   ./scripts/run_labelstudio.sh
+   ```powershell
+   $env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED = "true"
+   $env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT = "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP"
+   label-studio start --project-name "CRF QC" --label-config "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP\label_studio\template_crf.xml" --init --input-path "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP\label_studio\sample_import.jsonl"
    ```
-   Người dùng Windows có thể:
-   * Chạy script trực tiếp trong Git Bash hoặc WSL với lệnh `bash scripts/run_labelstudio.sh`.
-   * Hoặc đặt trước các biến môi trường cần thiết rồi thi hành câu lệnh tương đương trong PowerShell/CMD:
-     * **PowerShell**
-       ```powershell
-       $env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED = "true"
-       $env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT = "C:\duong\dan\toi\du\an"
-       label-studio start --project-name "CRF QC" --label-config "C:\duong\dan\toi\du\an\label_studio\template_crf.xml" --init --input-path "C:\duong\dan\toi\du\an\label_studio\sample_import.jsonl"
-       ```
-     * **Command Prompt (CMD)**
-       ```cmd
-       set LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
-       set LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=C:\duong\dan\toi\du\an
-       label-studio start --project-name "CRF QC" --label-config "C:\duong\dan\toi\du\an\label_studio\template_crf.xml" --init --input-path "C:\duong\dan\toi\du\an\label_studio\sample_import.jsonl"
-       ```
-   *(Nhớ thay `C:\duong\dan\toi\du\an` bằng đường dẫn thực tế tới thư mục dự án.)*
-   > **Lưu ý:** `LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED` và `LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT` phải được đặt trước khi chạy `label-studio start` để Label Studio truy cập được các tệp cục bộ.
-   Script bật chế độ phục vụ tệp cục bộ, trỏ Label Studio tới giao diện CRF được định nghĩa trong `label_studio/template_crf.xml`, và nạp sẵn dự án bằng `label_studio/sample_import.jsonl` (hoặc tệp JSONL bạn vừa tạo ở bước trước). Đăng nhập tại http://localhost:8080 để bắt đầu rà soát.
+   *(Nhớ thay đường dẫn nếu bạn đặt dự án ở chỗ khác.)*  
+   Sau đó mở trình duyệt tại [http://localhost:8080](http://localhost:8080).
 
 5. **Tiến hành rà soát QC**
    * So sánh ảnh quét với bản nháp hiển thị ở bảng điều khiển bên phải.
@@ -81,7 +60,7 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 6. **Xuất kết quả**
    * Từ Label Studio, xuất các nhiệm vụ đã hoàn thành dưới dạng JSON hoặc JSONL.
    * Chuyển đổi tệp xuất sang Excel với lệnh:
-     ```bash
+     ```powershell
      python scripts/json_to_excel.py path/to/export.json output/crf_final.xlsx
      ```
    * Tệp Excel thu được sẽ tổng hợp quyết định, nhận xét và siêu dữ liệu của người rà soát. Chia sẻ cho nhóm hòa giải ở bước tiếp theo.
