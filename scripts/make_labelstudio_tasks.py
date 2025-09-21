@@ -35,7 +35,7 @@ def discover_files(scan_dir: Path, draft_dir: Path) -> Iterable[tuple[Path, Path
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("output", type=Path, help="Destination JSONL file")
+    parser.add_argument("output", type=Path, help="Destination JSON task file")
     parser.add_argument("--scans", type=Path, default=Path("data/scans"), help="Directory containing scan images")
     parser.add_argument("--drafts", type=Path, default=Path("data/drafts"), help="Directory containing rendered HTML drafts")
     parser.add_argument("--checklist", type=Path, help="Optional file with newline separated checklist items")
@@ -56,11 +56,22 @@ def main() -> None:
         tasks.append(build_task(scan, draft, checklist_items))
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    with args.output.open("w", encoding="utf-8") as fp:
-        for task in tasks:
-            fp.write(json.dumps(task, ensure_ascii=False) + "\n")
+    suffix = args.output.suffix.lower()
 
-    print(f"Wrote {len(tasks)} tasks to {args.output}")
+    if suffix == ".jsonl":
+        with args.output.open("w", encoding="utf-8") as fp:
+            for task in tasks:
+                fp.write(json.dumps(task, ensure_ascii=False) + "\n")
+        fmt = "JSONL"
+    else:
+        # Label Studio's import UI expects an array of tasks (JSON), so we
+        # default to that representation whenever the output is not explicitly
+        # .jsonl.
+        payload = json.dumps(tasks, ensure_ascii=False, indent=2)
+        args.output.write_text(payload + "\n", encoding="utf-8")
+        fmt = "JSON"
+
+    print(f"Wrote {len(tasks)} tasks to {args.output} ({fmt})")
 
 
 if __name__ == "__main__":

@@ -18,4 +18,4 @@ if ! command -v label-studio >/dev/null 2>&1; then
   exit 1
 fi
 
-label-studio start --project-name "CRF QC" --label-config "$CONFIG_FILE" --init --input-path "$PROJECT_DIR/sample_import.jsonl"
+label-studio start --project-name "CRF QC" --label-config "$CONFIG_FILE" --init --input-path "$PROJECT_DIR/sample_import.json"

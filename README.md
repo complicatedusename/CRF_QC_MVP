@@ -16,7 +16,7 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 ├── output/
 │   └── crf_final.xlsx          # Tệp Excel tổng hợp kết quả QC cuối cùng (placeholder)
 ├── scripts/
-│   ├── make_labelstudio_tasks.py   # Tạo tệp JSONL nhiệm vụ từ scans + drafts
+│   ├── make_labelstudio_tasks.py   # Tạo tệp JSON nhiệm vụ từ scans + drafts
 │   ├── json_to_excel.py            # Chuyển đổi dữ liệu xuất từ Label Studio sang Excel
 │   ├── ocr_pdf_to_images.py        # Trợ thủ tùy chọn để tách PDF thành ảnh
 │   └── ocr_image_to_text.py        # Trợ thủ tùy chọn chạy OCR hàng loạt trên ảnh
@@ -37,12 +37,11 @@ pip install -r requirements.txt
 - Đặt ảnh quét từng trang vào `data/scans/` (PNG/JPG hoặc PDF đã tách trang).
 - Đặt bản nháp HTML vào `data/drafts/`, tên trùng với ảnh tương ứng (ví dụ: `subject001_page_01.html`).
 
-### 3) Sinh nhiệm vụ cho Label Studio (JSONL → import JSON)
+### 3) Sinh nhiệm vụ cho Label Studio (JSON)
 ```powershell
-python scripts/make_labelstudio_tasks.py label_studio/import.jsonl
-# Nếu cần đổi JSONL sang JSON array để import:
-# python scripts/jsonl_to_json.py label_studio/import.jsonl label_studio/sample_import.json
+python scripts/make_labelstudio_tasks.py label_studio/import.json
 ```
+> ⚠️ **Lưu ý:** Giao diện import của Label Studio hiện không chấp nhận JSONL. Hãy giữ phần mở rộng `.json` khi tạo tệp nhiệm vụ.
 
 ### 4) Khởi tạo và chạy Label Studio (Windows)
 ```powershell
