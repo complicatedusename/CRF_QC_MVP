@@ -48,6 +48,23 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
    ```bash
    ./scripts/run_labelstudio.sh
    ```
+   Người dùng Windows có thể:
+   * Chạy script trực tiếp trong Git Bash hoặc WSL với lệnh `bash scripts/run_labelstudio.sh`.
+   * Hoặc đặt trước các biến môi trường cần thiết rồi thi hành câu lệnh tương đương trong PowerShell/CMD:
+     * **PowerShell**
+       ```powershell
+       $env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED = "true"
+       $env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT = "C:\duong\dan\toi\du\an"
+       label-studio start --project-name "CRF QC" --label-config "C:\duong\dan\toi\du\an\label_studio\template_crf.xml" --init --input-path "C:\duong\dan\toi\du\an\label_studio\sample_import.jsonl"
+       ```
+     * **Command Prompt (CMD)**
+       ```cmd
+       set LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
+       set LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=C:\duong\dan\toi\du\an
+       label-studio start --project-name "CRF QC" --label-config "C:\duong\dan\toi\du\an\label_studio\template_crf.xml" --init --input-path "C:\duong\dan\toi\du\an\label_studio\sample_import.jsonl"
+       ```
+   *(Nhớ thay `C:\duong\dan\toi\du\an` bằng đường dẫn thực tế tới thư mục dự án.)*
+   > **Lưu ý:** `LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED` và `LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT` phải được đặt trước khi chạy `label-studio start` để Label Studio truy cập được các tệp cục bộ.
    Script bật chế độ phục vụ tệp cục bộ, trỏ Label Studio tới giao diện CRF được định nghĩa trong `label_studio/template_crf.xml`, và nạp sẵn dự án bằng `label_studio/sample_import.jsonl` (hoặc tệp JSONL bạn vừa tạo ở bước trước). Đăng nhập tại http://localhost:8080 để bắt đầu rà soát.
 
 5. **Tiến hành rà soát QC**
