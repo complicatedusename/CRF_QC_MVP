@@ -12,7 +12,7 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 │   └── qc_output/      # Tệp JSON/CSV trung gian sinh ra trong bước QC
 ├── label_studio/
 │   ├── template_crf.xml        # Cấu hình giao diện cho Label Studio
-│   └── sample_import.json     # Tác vụ mẫu giúp khởi tạo dự án nhanh chóng
+│   └── sample_import.json      # Tác vụ mẫu giúp khởi tạo dự án nhanh chóng
 ├── output/
 │   └── crf_final.xlsx          # Tệp Excel tổng hợp kết quả QC cuối cùng (placeholder)
 ├── scripts/
@@ -26,8 +26,26 @@ Kho lưu trữ này cung cấp một quy trình gọn nhẹ để kiểm soát c
 
 ## Getting started
 
-1. **Cài đặt phụ thuộc**
-   ```powershell
+### 1) Cài đặt phụ thuộc (Windows PowerShell)
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### 2) Chuẩn bị dữ liệu đầu vào
+- Đặt ảnh quét từng trang vào `data/scans/` (PNG/JPG hoặc PDF đã tách trang).
+- Đặt bản nháp HTML vào `data/drafts/`, tên trùng với ảnh tương ứng (ví dụ: `subject001_page_01.html`).
+
+### 3) Sinh nhiệm vụ cho Label Studio (JSONL → import JSON)
+```powershell
+python scripts/make_labelstudio_tasks.py label_studio/import.jsonl
+# Nếu cần đổi JSONL sang JSON array để import:
+# python scripts/jsonl_to_json.py label_studio/import.jsonl label_studio/sample_import.json
+```
+
+### 4) Khởi tạo và chạy Label Studio (Windows)
+```powershell
 # Cho phép Label Studio truy cập file cục bộ
 $env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED = "true"
 $env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT = "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP"
@@ -37,35 +55,31 @@ label-studio init "CRF QC" `
   -l "C:\Users\BeTin\Documents\GitHub\CRF_QC_MVP\label_studio\template_crf.xml" `
   --username admin@example.com `
   --password admin123
+```
 
+**Bước trong UI (bắt buộc 1 lần):** vào *Label Studio → Projects → CRF QC → Settings → Labeling Interface*, xóa nội dung mặc định và dán template trong `label_studio/template_crf.xml` → **Save**.
 
-Vào Label Studio → Projects → CRF QC → Settings → Labeling Interface → 
-xóa toàn bộ nội dung mặc định và dán template trong `label_studio/template_crf.xml` → Save.
+```powershell
 # Khởi động server (Windows cần thêm fix SQLite)
 label-studio start --agree-fix-sqlite
 ```
+Mở trình duyệt tới: http://localhost:8080 và đăng nhập bằng tài khoản đã đặt ở bước `init`.
 
-Sau đó mở [http://localhost:8080](http://localhost:8080), đăng nhập bằng username/password đã đặt ở bước init.  
+### 5) Import dữ liệu
 Trong giao diện web, chọn **Import** và tải file `label_studio\sample_import.json` để nạp dữ liệu.
-   *(Nhớ thay đường dẫn nếu bạn đặt dự án ở chỗ khác.)*  
-   Sau đó mở trình duyệt tại [http://localhost:8080](http://localhost:8080).
 
-5. **Tiến hành rà soát QC**
-   * So sánh ảnh quét với bản nháp hiển thị ở bảng điều khiển bên phải.
-   * Điền lần lượt các hạng mục trong checklist và ghi chép sai lệch tại trường ghi chú.
-   * Đặt trạng thái QC tổng thể bằng các lựa chọn đã cung cấp.
+### 6) Tiến hành rà soát QC
+- So sánh ảnh quét với bản nháp hiển thị bên phải.
+- Điền checklist và ghi chú.
+- Đặt trạng thái QC tổng thể.
 
-6. **Xuất kết quả**
-   * Từ Label Studio, xuất các nhiệm vụ đã hoàn thành dưới dạng JSON hoặc JSONL.
-   * Chuyển đổi tệp xuất sang Excel với lệnh:
-     ```powershell
-     python scripts/json_to_excel.py path/to/export.json output/crf_final.xlsx
-     ```
-   * Tệp Excel thu được sẽ tổng hợp quyết định, nhận xét và siêu dữ liệu của người rà soát. Chia sẻ cho nhóm hòa giải ở bước tiếp theo.
+### 7) Xuất kết quả
+- Trong Label Studio, export nhiệm vụ đã hoàn thành (JSON/JSONL).
+- Chuyển đổi sang Excel:
+```powershell
+python scripts/json_to_excel.py path\to\export.json output\crf_final.xlsx
+```
 
 ## Optional OCR helpers
-
-* `ocr_pdf_to_images.py` chuyển đổi các tệp PDF thành ảnh PNG phù hợp cho bước rà soát và các tác vụ OCR tiếp theo.
-* `ocr_image_to_text.py` chạy công cụ Tesseract OCR trên một loạt ảnh và lưu văn bản thô vào `data/qc_output/` để tiện kiểm tra nhanh hoặc so sánh với nội dung bản nháp.
-
-Các tiện ích này không bắt buộc cho quy trình QC nhưng tái hiện những script hỗ trợ từ nguyên mẫu ban đầu.
+- `ocr_pdf_to_images.py` chuyển đổi PDF thành ảnh PNG.
+- `ocr_image_to_text.py` chạy Tesseract OCR hàng loạt, lưu văn bản thô vào `data/qc_output/`.
