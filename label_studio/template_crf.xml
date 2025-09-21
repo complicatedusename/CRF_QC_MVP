@@ -1,0 +1,29 @@
+<View>
+  <Header value="CRF QC Review" />
+  <Paragraph value="Use this interface to confirm that the extracted CRF draft matches the source scan." />
+
+  <View style="display:flex; gap: 24px;">
+    <View style="flex:1;">
+      <Header value="Source Scan" />
+      <Image name="crf_scan" value="$image_url" zoom="true" zoomControl="true" brightness="true" contrast="true" />
+    </View>
+    <View style="flex:1;">
+      <Header value="Draft Output" />
+      <HyperText name="draft_html" value="$draft_html" />
+    </View>
+  </View>
+
+  <Header value="Quick Checks" />
+  <List name="checklist" value="${checks}" elementType="ol" />
+
+  <Choices name="qc_result" toName="crf_scan" choice="single" required="true" showInline="true">
+    <Choice value="Pass" />
+    <Choice value="Needs Fix" />
+    <Choice value="Blocker" />
+  </Choices>
+
+  <Textarea name="qc_notes" toName="crf_scan" label="Reviewer Notes" maxSubmissions="1" placeholder="Summarize discrepancies or confirm completion." />
+
+  <Header value="Field Level Exceptions" />
+  <Table name="field_deltas" value="$field_deltas" />
+</View>
