@@ -1,51 +1,98 @@
 [
   {
     "data": {
-      "image_url": "https://example.com/scans/patient_001_page_1.png",
-      "draft_html": "<h3>Visit 1</h3><p>Vital signs recorded. All fields captured.</p>",
-      "checks": [
-        "Confirm patient identifiers match between scan and draft.",
-        "Validate visit date and site.",
-        "Flag missing vitals or lab entries."
-      ],
-      "field_deltas": [
-        [
-          "Field",
-          "Scan Value",
-          "Draft Value"
-        ],
-        [
-          "Height",
-          "175 cm",
-          "N/A"
-        ],
-        [
-          "Systolic BP",
-          "120",
-          "112"
-        ]
-      ]
+      "ocr_image": "data/scans/CRF_001.jpg"
     },
     "predictions": [
       {
         "result": [
           {
-            "from_name": "qc_result",
-            "to_name": "crf_scan",
-            "type": "choices",
+            "from_name": "patient_id",
+            "to_name": "crf_image",
+            "type": "textarea",
             "value": {
-              "choices": [
-                "Needs Fix"
+              "text": [
+                "P001"
               ]
             }
           },
           {
-            "from_name": "qc_notes",
-            "to_name": "crf_scan",
+            "from_name": "name",
+            "to_name": "crf_image",
             "type": "textarea",
             "value": {
               "text": [
-                "Height missing in draft export."
+                "Nguyễn Văn A"
+              ]
+            }
+          },
+          {
+            "from_name": "dob",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "1990-01-01"
+              ]
+            }
+          },
+          {
+            "from_name": "gender",
+            "to_name": "crf_image",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "Nam"
+              ]
+            }
+          },
+          {
+            "from_name": "age",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "35"
+              ]
+            }
+          },
+          {
+            "from_name": "visit_id",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "V01"
+              ]
+            }
+          },
+          {
+            "from_name": "visit_date",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "2025-09-15"
+              ]
+            }
+          },
+          {
+            "from_name": "MASI",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "14"
+              ]
+            }
+          },
+          {
+            "from_name": "note",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "OCR nháp"
               ]
             }
           }
@@ -55,30 +102,144 @@
   },
   {
     "data": {
-      "image_url": "https://example.com/scans/patient_002_page_1.png",
-      "draft_html": "<h3>Visit 2</h3><p>Medications updated and adverse events logged.</p>",
-      "checks": [
-        "Review new adverse events against draft entries.",
-        "Verify concomitant medications.",
-        "Ensure narrative comments transcribed."
-      ],
-      "field_deltas": [
-        [
-          "Field",
-          "Scan Value",
-          "Draft Value"
-        ],
-        [
-          "Adverse Event",
-          "Headache",
-          "Migraine"
-        ],
-        [
-          "Medications",
-          "Aspirin",
-          "Aspirin"
+      "ocr_image": "data/scans/CRF_002.jpg"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "patient_id",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "P002"
+              ]
+            }
+          },
+          {
+            "from_name": "name",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "Trần Thị B"
+              ]
+            }
+          },
+          {
+            "from_name": "dob",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "1988-05-20"
+              ]
+            }
+          },
+          {
+            "from_name": "gender",
+            "to_name": "crf_image",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "Nữ"
+              ]
+            }
+          },
+          {
+            "from_name": "visit_id",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "V01"
+              ]
+            }
+          },
+          {
+            "from_name": "visit_date",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "2025-09-16"
+              ]
+            }
+          },
+          {
+            "from_name": "MASI",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "12"
+              ]
+            }
+          }
         ]
-      ]
-    }
+      }
+    ]
+  },
+  {
+    "data": {
+      "ocr_image": "data/scans/CRF_003.jpg"
+    },
+    "predictions": [
+      {
+        "result": [
+          {
+            "from_name": "patient_id",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "P003"
+              ]
+            }
+          },
+          {
+            "from_name": "dob",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "1995-12-31"
+              ]
+            }
+          },
+          {
+            "from_name": "gender",
+            "to_name": "crf_image",
+            "type": "choices",
+            "value": {
+              "choices": [
+                "Nam"
+              ]
+            }
+          },
+          {
+            "from_name": "MASI",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "9"
+              ]
+            }
+          },
+          {
+            "from_name": "note",
+            "to_name": "crf_image",
+            "type": "textarea",
+            "value": {
+              "text": [
+                "mờ, cần QC"
+              ]
+            }
+          }
+        ]
+      }
+    ]
   }
 ]

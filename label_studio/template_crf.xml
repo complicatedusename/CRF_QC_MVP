@@ -1,17 +1,42 @@
 <View>
-  <!-- Hiển thị ảnh CRF -->
-  <Image name="crf_scan" value="$image_url"/>
+  <Style>
+    .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+    .panel { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; }
+    .title { font-weight: 600; margin-bottom: 6px; }
+  </Style>
 
-  <!-- Hiển thị bản nháp HTML -->
-  <HyperText name="crf_draft" value="$draft_html"/>
+  <Header value="CRF QC — Ảnh bên trái, Form bên phải"/>
 
-  <!-- Checklist QC (sửa lại đúng cú pháp $checks) -->
-  <Choices name="qc_checklist" toName="crf_scan" choice="multiple" value="$checks">
-    <Choice value="Confirm patient identifiers match between scan and draft."/>
-    <Choice value="Validate visit date and site."/>
-    <Choice value="Flag missing vitals or lab entries."/>
-  </Choices>
+  <View className="grid">
+    <!-- Trái: ảnh/PDF gốc -->
+    <View className="panel">
+      <Header value="Ảnh/PDF gốc"/>
+      <Image name="crf_image" value="$ocr_image" zoom="true" rotateControl="true"/>
+    </View>
 
-  <!-- Textarea để ghi chú QC -->
-  <TextArea name="qc_notes" toName="crf_scan" placeholder="Enter QC notes here"/>
+    <!-- Phải: form QC (auto-fill bằng predictions) -->
+    <View className="panel">
+      <Header value="Form QC (sửa/xác nhận)"/>
+      <Header value="Chuẩn hóa ngày: YYYY-MM-DD. Gender: Nam/Nữ. Trường thiếu thì để trống." />
+
+      <TextArea name="patient_id" toName="crf_image" label="Patient ID" rows="1"/>
+      <TextArea name="name"       toName="crf_image" label="Họ tên" rows="1"/>
+      <TextArea name="dob"        toName="crf_image" label="Ngày sinh (YYYY-MM-DD)" rows="1"/>
+
+      <Choices  name="gender"     toName="crf_image" choice="single" showInLine="true">
+        <Choice value="Nam"/><Choice value="Nữ"/>
+      </Choices>
+
+      <TextArea name="age"        toName="crf_image" label="Tuổi" rows="1"/>
+      <TextArea name="visit_id"   toName="crf_image" label="Visit ID" rows="1"/>
+      <TextArea name="visit_date" toName="crf_image" label="Ngày khám (YYYY-MM-DD)" rows="1"/>
+
+      <TextArea name="MASI"       toName="crf_image" label="MASI Score" rows="1"/>
+      <TextArea name="note"       toName="crf_image" label="Ghi chú" rows="3"/>
+
+      <Choices name="verified" toName="crf_image" choice="single" showInLine="true">
+        <Choice value="Đã duyệt"/>
+      </Choices>
+    </View>
+  </View>
 </View>
